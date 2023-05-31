@@ -11,11 +11,14 @@ import "./navigation.style.scss"
     <CrwnLogo className='logo'/>
     	</Link>
       <div className='nav-links-container'>
-       <Link className='nav-link' to="">
+			<Link className='nav-link' to="sign-in">
  shop   
+       </Link>
+       <Link className='nav-link' to="">
+ sign-in   
        </Link> 
         </div>	
-	     </div>
+	     </div> 
 			<Outlet />
 		</>
 	);
