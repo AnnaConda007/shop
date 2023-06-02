@@ -23,8 +23,8 @@ provider.setCustomParameters({
 
 export const auth = getAuth();
 export const signInWithGooglePopup = () => signInWithPopup(auth, provider); // всплывающее окно
-
-export const signInWithGoogleRedirect = () => signInWithRedirect(auth, provider); // перенаправление на страницу гугл для авторизации
+/*
+export const signInWithGoogleRedirect = () => signInWithRedirect(auth, provider);  перенаправление на страницу гугл для авторизации, не используется*/
 
 export const db = getFirestore(); // доступ ко всей бд проекта
 export const createUserDocumentFrom = async (userAuth, additionalInfo) => {

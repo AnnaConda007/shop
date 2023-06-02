@@ -24,7 +24,7 @@ const SignInForm = () => {
 			resetFormFields();
 		} catch (error) {}
 	};
-	const SignInWithGoogle = async () => {
+	const signInWithGoogle = async () => {
 		const { user } = await signInWithGooglePopup();
 		await createUserDocumentFrom(user);
 	};
@@ -40,7 +40,7 @@ const SignInForm = () => {
 				<FormInput label='Password' type='password' value={password} required onChange={handleChange} name='password' />
 
 				<Button type='submit'>Sign in</Button>
-				<Button onClick={SignInWithGoogle}>Google sign in</Button>
+				<Button onClick={signInWithGoogle}>Google sign in</Button>
 			</form>
 		</div>
 	);
