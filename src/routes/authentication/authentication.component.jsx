@@ -7,9 +7,10 @@ import {
 	auth,
 } from '../../utils/firebase/firebase.utils';
 import SignUpForm from '../../comonents/sign-up-form/sign-up-form.component';
-
+import SignInForm from '../../comonents/sign-in-form/sign-in-form.component';
 const Authentication = () => {
 	useEffect(() => {
+		// эта часть в уроке удаляется так как авторизация через вслывающее окно, а не редрект
 		const fetchData = async () => {
 			const response = await getRedirectResult(auth);
 			if (response) {
@@ -20,6 +21,7 @@ const Authentication = () => {
 	}, []);
 
 	const logGoogleUser = async () => {
+		// эта функция уроке удаляется как и кнопка button
 		const { user } = await signInWithGooglePopup();
 		console.log(user);
 		const userDocRef = await createUserDocumentFrom(user);
@@ -27,10 +29,8 @@ const Authentication = () => {
 
 	return (
 		<div>
-			{' '}
-			<h1>sign</h1>
 			<button onClick={logGoogleUser}> Sign in with Google Popup </button>
-			<button onClick={signInWithGoogleRedirect}> Sign in with Google Redirect</button>
+			<SignInForm />
 			<SignUpForm />
 		</div>
 	);
