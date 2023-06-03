@@ -14,8 +14,7 @@ const defaultFormField = {
 };
 const SignUpForm = () => {
 	const [formField, setFormField] = useState(defaultFormField);
-	const { displayName, email, password, confirmPassword } = formField;
-	console.log(formField);
+	const { displayName, email, password, confirmPassword } = formField; 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
 		setFormField({ ...formField, [name]: value }); //расширение объекта при помощи оператора spread
@@ -30,8 +29,7 @@ const SignUpForm = () => {
 			return;
 		}
 		try {
-			const { user } = await createAuthWithEmailAndPassword(email, password); // при клике на "регистрация "  передаются почта и пароль
-			console.log(user);
+			const { user } = await createAuthWithEmailAndPassword(email, password); // при клике на "регистрация "  передаются почта и пароль 
 			await createUserDocumentFrom(user, { displayName }); // в createUserDocumentFrom передается деструктуризованое свойство объекта displayName
 			resetFormFields();
 		} catch (error) {
