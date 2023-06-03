@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { signInWithGooglePopup, createUserDocumentFrom } from '../../utils/firebase/firebase.utils';
+import { signInWithGooglePopup, createUserDocumentFrom , signInAuthWithEmailAndPassword} from '../../utils/firebase/firebase.utils';
 import FormInput from '../form-input/form-input.component';
 import './sign-in-form.styles.scss';
 import Button from '../button/button.component';
@@ -23,15 +23,19 @@ const SignInForm = () => {
 	const resetFormFields = () => {
 		setFormField(defaultFormField); // в состояние ипутов записывается изначальный объект, где инпуты = пустой строке
 	};
-	const handleSubmit = async (e) => {//  функция для вызова очищения формы, она вызывается на самой форме
+	const handleSubmit = async (e) => {
+		//  функция для вызова очищения формы, она вызывается на самой форме
 		e.preventDefault();
 		try {
+			const response = await signInAuthWithEmailAndPassword(email,password)
+			console.log(response)
 			resetFormFields();
 		} catch (error) {}
 	};
-	const signInWithGoogle = async () => { // функция авторизации , вызывается, на кнопке 
+	const signInWithGoogle = async () => {
+		// функция авторизации , вызывается, на кнопке
 		const { user } = await signInWithGooglePopup(); // вызывается метод, определенный в файле firebase, открывается модальное окно гугл с автоматическим настроенными методами для авторизации, так как функции передается метод auth, signInWithGooglePopup возвращает ответ со всеми аданными пользовается, сохраняется свойство user
-		await createUserDocumentFrom(user); // данные из user передаются для дальнейшей обработки в файле в firebase
+		await createUserDocumentFrom(user); // данные из user передаются для дальнейшей обработки в файле в firebas e
 	};
 
 	return (
@@ -41,9 +45,12 @@ const SignInForm = () => {
 			<form onSubmit={handleSubmit}>
 				<FormInput label='Email' type='email' value={email} required onChange={handleChange} name='email' />
 				<FormInput label='Password' type='password' value={password} required onChange={handleChange} name='password' />
-
-				<Button type='submit'>Sign in</Button>
-				<Button onClick={signInWithGoogle}>Google sign in</Button>
+				<div  className='buttons-container'  > 
+					<Button type='submit'>Sign in</Button>
+					<Button buttonClass={'google'} onClick={signInWithGoogle}>
+						Google sign in
+					</Button>
+				</div>
 			</form>
 		</div>
 	);
