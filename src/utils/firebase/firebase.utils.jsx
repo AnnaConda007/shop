@@ -19,12 +19,12 @@ export const auth = getAuth(); //  вызывается метод провод�
 export const signInWithGooglePopup = () => signInWithPopup(auth, provider); // этот метод просто определяет , что нужно открыть модальное окно, вызвать команды метода auth и связать их с ресурсом, определенным в provider
 // в компоненте регистрации прописано что после этой функции возвращаются данные c uzer
 
-export const createAuthWithEmailAndPassword = async (email, password) => {
+export const createAuthWithEmailAndPassword = async (email, password) => {// регистрация 
 	if (!email || !password) return;
-	return await createUserWithEmailAndPassword(auth, email, password);
+	return await createUserWithEmailAndPassword(auth, email, password); // вход через гугл
 };
 
-export const signInAuthWithEmailAndPassword = async (email, password) => {
+export const signInAuthWithEmailAndPassword = async (email, password) => { // вход по логин/пароль
 	if (!email || !password) return;
 	return await signInWithEmailAndPassword(auth, email, password);
 };
