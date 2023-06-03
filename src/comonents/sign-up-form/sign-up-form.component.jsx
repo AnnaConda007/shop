@@ -3,13 +3,15 @@ import { createAuthWithEmailAndPassword, createUserDocumentFrom } from '../../ut
 import FormInput from '../form-input/form-input.component';
 import './sign-up-form.styles.scss';
 import Button from '../button/button.component';
+
+// ________________________________блок с обновлением состояний , подробно расписан в SignIn.Component
 const defaultFormField = {
+	// объект со стартовыми данными состояний
 	displayName: '',
 	email: '',
 	password: '',
 	confirmPassword: '',
 };
-
 const SignUpForm = () => {
 	const [formField, setFormField] = useState(defaultFormField);
 	const { displayName, email, password, confirmPassword } = formField;
@@ -19,15 +21,18 @@ const SignUpForm = () => {
 		setFormField({ ...formField, [name]: value }); //расширение объекта при помощи оператора spread
 	};
 
+	//______________________ блок с регистрацией
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (password !== confirmPassword) {
+			// сравниваются значения двух свойств объекта, они к этому моменту уже обновлены и статичны, так как ипнуты уже обработаны
 			alert('password do not match');
 			return;
 		}
 		try {
-			const { user } = await createAuthWithEmailAndPassword(email, password);
-			await createUserDocumentFrom(user, { displayName });
+			const { user } = await createAuthWithEmailAndPassword(email, password); // при клике на "регистрация "  передаются почта и пароль
+			console.log(user);
+			await createUserDocumentFrom(user, { displayName }); // в createUserDocumentFrom передается деструктуризованое свойство объекта displayName
 			resetFormFields();
 		} catch (error) {
 			if (error.code === 'auth/email-already-in-use') {
@@ -58,14 +63,14 @@ const SignUpForm = () => {
 				<FormInput label='Password' type='password' value={password} required onChange={handleChange} name='password' />
 				<FormInput
 					label='Confirm password'
-					type='password'
+					type='password' 
 					value={confirmPassword}
 					required
 					onChange={handleChange}
 					name='confirmPassword'
 				/>
-				<Button  type='submit'>Sign in</Button>
-			</form>
+				<Button type='submit'>Sign in</Button>
+			</form> 
 		</div>
 	);
 };
