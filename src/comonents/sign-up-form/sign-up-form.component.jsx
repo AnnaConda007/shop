@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { createAuthWithEmailAndPassword, createUserDocumentFrom } from '../../utils/firebase/firebase.utils';
 import FormInput from '../form-input/form-input.component';
 import './sign-up-form.styles.scss';
 import Button from '../button/button.component';
+import { UserContext } from '../../contexts/user.context';
 
 // ________________________________блок с обновлением состояний , подробно расписан в SignIn.Component
 const defaultFormField = {
@@ -13,6 +14,7 @@ const defaultFormField = {
 	confirmPassword: '',
 };
 const SignUpForm = () => {
+	const {setCurrentUser} = useContext(UserContext)
 	const [formField, setFormField] = useState(defaultFormField);
 	const { displayName, email, password, confirmPassword } = formField; 
 	const handleChange = (e) => {
@@ -29,7 +31,8 @@ const SignUpForm = () => {
 			return;
 		}
 		try {
-			const { user } = await createAuthWithEmailAndPassword(email, password); // при клике на "регистрация "  передаются почта и пароль 
+			const { user } = await createAuthWithEmailAndPassword(email, password);
+			setCurrentUser(user) // при клике на "регистрация "  передаются почта и пароль 
 			await createUserDocumentFrom(user, { displayName }); // в createUserDocumentFrom передается деструктуризованое свойство объекта displayName
 			resetFormFields();
 		} catch (error) {

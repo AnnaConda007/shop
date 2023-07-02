@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { UserContext } from '../../contexts/user.context';
 import {
 	signInWithGooglePopup,
 	createUserDocumentFrom,
@@ -14,6 +15,8 @@ const defaultFormField = {
 	password: '',
 };
 const SignInForm = () => {
+	const { setCurrentUser } = useContext(UserContext);
+
 	// ____________________________________блок с обновлением состояний инпутов
 	const [formField, setFormField] = useState(defaultFormField); // создается состояние и изначально оно равно объекту с полями ввода, которые равны ""
 	const { email, password } = formField; // из объекта достаются отдельные значения
@@ -30,9 +33,11 @@ const SignInForm = () => {
 	const handleSubmit = async (e) => {
 		//  функция для вызова очищения формы, она вызывается на самой форме
 		e.preventDefault();
+
 		try {
-			const response = await signInAuthWithEmailAndPassword(email, password);
+			const { user } = await signInAuthWithEmailAndPassword(email, password);
 			resetFormFields();
+			setCurrentUser(user);
 		} catch (error) {
 			switch (error.code) {
 				case 'auth/wrong-password':

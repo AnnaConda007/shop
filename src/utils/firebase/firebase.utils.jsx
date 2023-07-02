@@ -5,6 +5,7 @@ import {
 	GoogleAuthProvider,
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
+	signOut,
 } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 const firebaseConfig = {
@@ -36,6 +37,8 @@ export const signInAuthWithEmailAndPassword = async (email, password) => {
 	if (!email || !password) return;
 	await signInWithEmailAndPassword(auth, email, password);
 };
+
+export const signOutUser = async () => await signOut(auth);
 
 export const db = getFirestore(); // доступ ко всей бд проекта
 export const createUserDocumentFrom = async (userAuth, additionalInfo) => {
