@@ -1,5 +1,10 @@
-import { useState } from 'react';
-import { signInWithGooglePopup, createUserDocumentFrom , signInAuthWithEmailAndPassword} from '../../utils/firebase/firebase.utils';
+import { useState, useContext } from 'react';
+import { UserContext } from '../../contexts/user.context';
+import {
+	signInWithGooglePopup,
+	createUserDocumentFrom,
+	signInAuthWithEmailAndPassword,
+} from '../../utils/firebase/firebase.utils';
 import FormInput from '../form-input/form-input.component';
 import './sign-in-form.styles.scss';
 import Button from '../button/button.component';
@@ -10,6 +15,8 @@ const defaultFormField = {
 	password: '',
 };
 const SignInForm = () => {
+	const { setCurrentUser } = useContext(UserContext);
+
 	// ____________________________________блок с обновлением состояний инпутов
 	const [formField, setFormField] = useState(defaultFormField); // создается состояние и изначально оно равно объекту с полями ввода, которые равны ""
 	const { email, password } = formField; // из объекта достаются отдельные значения
@@ -26,16 +33,28 @@ const SignInForm = () => {
 	const handleSubmit = async (e) => {
 		//  функция для вызова очищения формы, она вызывается на самой форме
 		e.preventDefault();
+
 		try {
-			const response = await signInAuthWithEmailAndPassword(email,password)
-			console.log(response)
+			const { user } = await signInAuthWithEmailAndPassword(email, password);
 			resetFormFields();
-		} catch (error) {}
+			setCurrentUser(user);
+		} catch (error) {
+			switch (error.code) {
+				case 'auth/wrong-password':
+					alert('Неверный пароль');
+					break;
+				case 'auth/user-not-found':
+					alert('Неверный email');
+					break;
+				default:
+					console.log(error);
+			}
+		}
 	};
 	const signInWithGoogle = async () => {
 		// функция авторизации , вызывается, на кнопке
 		const { user } = await signInWithGooglePopup(); // вызывается метод, определенный в файле firebase, открывается модальное окно гугл с автоматическим настроенными методами для авторизации, так как функции передается метод auth, signInWithGooglePopup возвращает ответ со всеми аданными пользовается, сохраняется свойство user
-		await createUserDocumentFrom(user); // данные из user передаются для дальнейшей обработки в файле в firebas e
+		await createUserDocumentFrom(user); // данные из user передаются для дальнейшей обработки в файле в firebase
 	};
 
 	return (
@@ -45,7 +64,7 @@ const SignInForm = () => {
 			<form onSubmit={handleSubmit}>
 				<FormInput label='Email' type='email' value={email} required onChange={handleChange} name='email' />
 				<FormInput label='Password' type='password' value={password} required onChange={handleChange} name='password' />
-				<div  className='buttons-container'  > 
+				<div className='buttons-container'>
 					<Button type='submit'>Sign in</Button>
 					<Button buttonClass={'google'} onClick={signInWithGoogle}>
 						Google sign in
