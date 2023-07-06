@@ -7,7 +7,7 @@ import {
 	signInWithEmailAndPassword,
 	signOut,
 } from 'firebase/auth';
-import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
+import { getFirestore, doc, getDoc, setDoc, collection, writeBatch, query, getDocs } from 'firebase/firestore';
 const firebaseConfig = {
 	apiKey: 'AIzaSyAwqTVAyyStC-DA4tHKryOiyBvxz5mKZZs',
 	authDomain: 'crnw-a9407.firebaseapp.com',
@@ -57,4 +57,29 @@ export const createUserDocumentFrom = async (userAuth, additionalInfo) => {
 	}
 
 	return userDocRef; // в любом случае вернуть ссылку
+};
+
+export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
+	const collectionRef = collection(db, collectionKey); // забронируй место для коллекции
+	const batch = writeBatch(db); // метод который позволяет менять данные в коллекции
+	objectsToAdd.forEach((object) => {
+		// для каждого объекта в массиве
+		const docRef = doc(collectionRef, object.title.toLowerCase()); // задай название подкатегории
+		batch.set(docRef, object); // и сами данные
+	});
+	await batch.commit(); // запусти все это
+	console.log('данные записаны в bd');
+};
+
+export const getCategoriesAndDocs = async () => {
+	const collectionRef = collection(db, 'categories'); //смотрим откуда брать данные
+	const q = query(collectionRef); //говорим откуда хотим взять данные
+	const querySnapshot = await getDocs(q); //забираем данные
+	const categoryMap = querySnapshot.docs.reduce((acc, docSnapshot) => {
+		// к полученным данным применяем reduce, где acc это пустой объект, а docSnapshot каждый элемент масива, то есть объект с товарами
+		const { title, items } = docSnapshot.data(); // достаем из каждого объекта в массиве title и вложенный массив с товарами, то есть items
+		acc[title.toLowerCase()] = items; // в объект acc добавляем новое свойство title и присваиваем ему items
+		return acc;
+	}, {});
+	return categoryMap;
 };
